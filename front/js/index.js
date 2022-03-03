@@ -31,9 +31,9 @@ fetch("http://localhost:3000/api/products")
     for(let d of data){
         document.getElementById("items").innerHTML +=  `<a href="./product.html?id=${d._id}">
                                                             <article>
-                                                            <img src="${d.imageUrl}" alt="${d.altTxt}, Kanap ${d.name}">
-                                                            <h3 class="productName">Kanap ${d.name}</h3>
-                                                            <p class="productDescription">${d.description}</p>
+                                                                <img src="${d.imageUrl}" alt="${d.altTxt}, Kanap ${d.name}">
+                                                                <h3 class="productName">Kanap ${d.name}</h3>
+                                                                <p class="productDescription">${d.description}</p>
                                                             </article>
                                                         </a>`
     }
