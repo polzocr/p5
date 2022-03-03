@@ -16,42 +16,46 @@ for(let i = 0; i < localStorage.length; i++){
     .then(data => {
         document.getElementById("cart__items").innerHTML += `   <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                                                                     <div class="cart__item__img">
-                                                                    <img src="${data.imageUrl}" alt="Photographie d'un canapé">
+                                                                        <img src="${data.imageUrl}" alt="Photographie d'un canapé">
                                                                     </div>
                                                                     <div class="cart__item__content">
-                                                                    <div class="cart__item__content__description">
-                                                                        <h2>${data.name}</h2>
-                                                                        <p>${color}</p>
-                                                                        <p>${data.price*quantity} €</p>
-                                                                    </div>
-                                                                    <div class="cart__item__content__settings">
-                                                                        <div class="cart__item__content__settings__quantity">
-                                                                        <p>Qté : </p>
-                                                                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantity}">
+                                                                        <div class="cart__item__content__description">
+                                                                            <h2>${data.name}</h2>
+                                                                            <p>${color}</p>
+                                                                            <p>${data.price*quantity} €</p>
                                                                         </div>
-                                                                        <div class="cart__item__content__settings__delete">
-                                                                        <p class="deleteItem">Supprimer</p>
+                                                                        <div class="cart__item__content__settings">
+                                                                            <div class="cart__item__content__settings__quantity">
+                                                                                <p>Qté : </p>
+                                                                                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantity}">
+                                                                            </div>
+                                                                            <div class="cart__item__content__settings__delete">
+                                                                            <p class="deleteItem">Supprimer</p>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
                                                                     </div>
                                                                 </article> `
 
     
         let deleteButton = document.getElementsByClassName("deleteItem")
-        for(let i = 0; i< deleteButton.length; i ++){
+       
+        for(let i = 0; i < deleteButton.length; i ++){
             deleteButton[i].addEventListener("click", function(e){
-            console.log("ca marche ?");
-            deleteCart(); 
+            deleteCart(this);
+            deleteStorage(this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.innerHTML+ " " + this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML);
             })
         }
     })    
 }
 
-function deleteCart() {
-    let article = document.querySelector("h2").closest("article");
-    let articleParent = document.getElementById("cart__items");
-    console.log(articleParent);
-    articleParent.removeChild(article);
+
+
+function deleteCart(element) {
+    element.closest("article").remove();
+}
+
+function deleteStorage(name){
+    localStorage.removeItem(name)
 }
 
 
