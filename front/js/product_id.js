@@ -45,7 +45,7 @@ fetch("http://localhost:3000/api/products/" + id)
         document.getElementById("colors").innerHTML += `<option value="${color}">${color}</option>` 
     }
     document.getElementById("addToCart").addEventListener('click', function(event){
-        ElementExist(data);
+        elementExist(data);
     })
 })
 
@@ -57,17 +57,17 @@ function addToCart(data, quantity){
 
 }
 
-function ElementExist(data){
+function elementExist(data){
     if(localStorage.getItem(data.name + " " + document.getElementById("colors").value)) {
         console.log("l'élément existe déja");
-        ChangeQuantity(data);
+        changeQuantity(data);
     } else {
         console.log("l'élément n'existe pas");
         addToCart(data, document.getElementById("quantity").value);
     }
 }
 
-function ChangeQuantity(data){
+function changeQuantity(data){
     let name = localStorage.getItem(data.name + " " + document.getElementById("colors").value);
     let oldQuantity = JSON.parse(name)[2];
     let newQuantity = parseInt(document.getElementById("quantity").value) + parseInt(oldQuantity);
