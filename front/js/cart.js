@@ -37,12 +37,20 @@ for(let i = 0; i < localStorage.length; i++){
                                                                 </article> `
 
     
-        let deleteButton = document.getElementsByClassName("deleteItem")
-       
+        let deleteButton = document.getElementsByClassName("deleteItem");
         for(let i = 0; i < deleteButton.length; i ++){
             deleteButton[i].addEventListener("click", function(e){
             deleteCart(this);
             deleteStorage(this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.innerHTML+ " " + this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML);
+            })
+        }
+        
+        let oldQuantity = document.querySelectorAll(".cart__item__content__settings__quantity input");
+        
+        for(let i = 0; i < oldQuantity.length; i++ ){
+            oldQuantity[i].addEventListener("change", function(event){
+                changeQuantityCartInHTML(this);
+                changeQuantityCartInStorage(this);
             })
         }
     })    
@@ -57,6 +65,20 @@ function deleteCart(element) {
 function deleteStorage(name){
     localStorage.removeItem(name)
 }
+
+function changeQuantityCartInHTML(element){
+    element.setAttribute("value", event.target.value);
+}
+
+function changeQuantityCartInStorage(element){
+    let nameCart = element.parentElement.parentElement.previousElementSibling.children[0].innerHTML + " " + element.parentElement.parentElement.previousElementSibling.children[1].innerHTML
+    let findElementStorage = localStorage.getItem(nameCart)
+    let findQuantity = JSON.parse(findElementStorage);
+    findQuantity[2] = event.target.value;
+    localStorage.setItem(nameCart, JSON.stringify(findQuantity));
+}
+
+
 
 
 
