@@ -59,7 +59,7 @@ function addToCart(data, quantity){
 
 function elementExist(data){
     if(localStorage.getItem(data.name + " " + document.getElementById("colors").value)) {
-        console.log("l'élément existe déja");
+        console.log("l'élément existe déja, on le modifie si besoin");
         changeQuantity(data);
     } else {
         console.log("l'élément n'existe pas");
