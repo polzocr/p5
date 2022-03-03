@@ -1,3 +1,5 @@
+/*  Méthode avec toutes les valeurs dans l'url
+
 let url = new URL(window.location.href);
 
 let id = url.searchParams.get("id");
@@ -18,3 +20,63 @@ document.getElementById("description").textContent = description;
 for(color of colors){
     document.getElementById("colors").innerHTML += `<option value="${color}">${color}</option>` 
 }
+
+*/
+
+let url = new URL(window.location.href);
+let id = url.searchParams.get("id");
+
+
+fetch("http://localhost:3000/api/products/" + id)
+.then( res => {
+    if (res.ok) {
+        return res.json();
+    }else {
+        console.log("Une erreur est survenu")
+    }
+})
+.then(data => {
+
+    document.getElementsByClassName("item__img")[0].innerHTML = `<img src="${data.imageUrl}" alt="Photographie d'un canapé">`;
+    document.getElementById("title").textContent = data.name;
+    document.getElementById("price").textContent = data.price;
+    document.getElementById("description").textContent = data.description;
+    for(color of data.colors){
+        document.getElementById("colors").innerHTML += `<option value="${color}">${color}</option>` 
+    }
+    document.getElementById("addToCart").addEventListener('click', function(event){
+        ElementExist(data);
+    })
+})
+
+
+function addToCart(data, quantity){
+    let tabProduct = [];
+    tabProduct.push(data._id, document.getElementById("colors").value, quantity);
+    localStorage.setItem(data.name + " " + document.getElementById("colors").value, JSON.stringify(tabProduct));  
+
+}
+
+function ElementExist(data){
+    if(localStorage.getItem(data.name + " " + document.getElementById("colors").value)) {
+        console.log("l'élément existe déja");
+        ChangeQuantity(data);
+    } else {
+        console.log("l'élément n'existe pas");
+        addToCart(data, document.getElementById("quantity").value);
+    }
+}
+
+function ChangeQuantity(data){
+    let name = localStorage.getItem(data.name + " " + document.getElementById("colors").value);
+    let oldQuantity = JSON.parse(name)[2];
+    let newQuantity = parseInt(document.getElementById("quantity").value) + parseInt(oldQuantity);
+    console.log(newQuantity);
+    addToCart(data,newQuantity);
+
+
+  
+}
+
+
+
