@@ -1,10 +1,13 @@
-
+let tab = [];
+let sum = 0;
 for(let i = 0; i < localStorage.length; i++){
     //let name = localStorage.key(i).split(" ")[0] + " " + localStorage.key(i).split(" ")[1];
     let color = localStorage.key(i).split(" ")[2];
     let getInfo = JSON.parse(localStorage.getItem(localStorage.key(i)));
     let id = getInfo[0];
     let quantity = getInfo[2];
+    tab.push(quantity);
+    
     fetch("http://localhost:3000/api/products/" + id)
     .then(res => {
         if(res.ok) {
@@ -51,10 +54,12 @@ for(let i = 0; i < localStorage.length; i++){
             oldQuantity[i].addEventListener("change", function(event){
                 changeQuantityCartInHTML(this);
                 changeQuantityCartInStorage(this);
+                changeTotalQuantity(i);
             })
         }
     })    
 }
+
 
 
 
@@ -76,6 +81,19 @@ function changeQuantityCartInStorage(element){
     let findQuantity = JSON.parse(findElementStorage);
     findQuantity[2] = event.target.value;
     localStorage.setItem(nameCart, JSON.stringify(findQuantity));
+}
+
+function totalQuantity(){
+    for(ta of tab){
+        sum += parseInt(ta);
+    }
+    console.log(sum);
+}
+
+function changeTotalQuantity(index){
+    tab[index] = event.target.value;
+    sum = 0;
+    totalQuantity();
 }
 
 
