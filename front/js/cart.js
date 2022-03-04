@@ -3,6 +3,7 @@ let sumQuantity = 0;
 let tabPrice = [];
 let sumPrice = 0;
 let cartPrice = [];
+let seum;
 for(let i = 0; i < localStorage.length; i++){
     //let name = localStorage.key(i).split(" ")[0] + " " + localStorage.key(i).split(" ")[1];
     let color = localStorage.key(i).split(" ")[2];
@@ -47,7 +48,7 @@ for(let i = 0; i < localStorage.length; i++){
                                                                 </article> `
 
              
-        setTotalPrice(data.price, quantity);
+        TotalPrice();
 
         let deleteButton = document.getElementsByClassName("deleteItem");
         for(let i = 0; i < deleteButton.length; i ++){
@@ -55,7 +56,7 @@ for(let i = 0; i < localStorage.length; i++){
                 deleteCart(this);
                 deleteStorage(this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.innerHTML+ " " + this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML);
                 deleteTotalQuantity(i);
-                reduceTotalPrice(i);
+                TotalPrice();
         })
         }
         
@@ -64,11 +65,9 @@ for(let i = 0; i < localStorage.length; i++){
             oldQuantity[i].addEventListener("change", function(event){
                 changeQuantityCartInHTML(this);
                 changeQuantityCartInStorage(this);
-                changePriceCart(i);
+                changePriceCart(this, i);
                 changeTotalQuantity(i);
-                changeTotalPrice(i);
-               
-            
+                TotalPrice() 
             })
         }
         
@@ -78,8 +77,6 @@ for(let i = 0; i < localStorage.length; i++){
 
 totalQuantity();
 totalQuantityHTML();
-totalPrice();
-totalPriceHTML();
 
 
 
@@ -104,10 +101,12 @@ function changeQuantityCartInStorage(element){
     localStorage.setItem(nameCart, JSON.stringify(findQuantity));
 }
 
-function changePriceCart(index){
-    if( document.querySelectorAll(".cart__item__content__description")[index].querySelectorAll("p")[1]){
+
+function changePriceCart(element, index){
+    /*if( document.querySelectorAll(".cart__item__content__description")[index]) {
         document.querySelectorAll(".cart__item__content__description")[index].querySelectorAll("p")[1].textContent = (event.target.value)*cartPrice[index] + " €";
-    }
+    }*/
+    element.parentElement.parentElement.previousElementSibling.children[2].textContent = (event.target.value)*cartPrice[index] + " €";
 }
 
 function totalQuantity(){
@@ -136,22 +135,8 @@ function deleteTotalQuantity(index){
     totalQuantityHTML();
 }
 
-function totalPrice(){
-    for(tab of tabPrice){
-        sumPrice += parseInt(tab);
-    }
-}
 
-function totalPriceHTML(){
-    document.getElementById("totalPrice").textContent = sumPrice;
-}
 
-function changeTotalPrice(index){
-    tabPrice[index] = event.target.value;
-    sumPrice = 0;
-    totalPrice();
-    totalPriceHTML();
-}
 
 
 function setTotalPrice(data, quantity){
@@ -164,11 +149,34 @@ function setTotalPrice(data, quantity){
     document.getElementById("totalPrice").textContent = totalPrice;
 }
 
-function reduceTotalPrice(index){
-    document.getElementById("totalPrice").textContent = parseInt(document.getElementById("totalPrice").textContent)-parseInt(tabPrice[index])
+function TotalPrice(){
+    elements = document.getElementsByClassName("cart__item__content__description");
+    let seum = 0;
+    for(element of elements){
+        seum += JSON.parse(element.getElementsByTagName("p")[1].textContent.split(" ")[0]);
+        
+    }
+    document.getElementById("totalPrice").textContent = seum;
 }
-               
 
+function changeTotalPrice(index){
+    console.log(tabPrice);
+    tabPrice[index]= cartPrice[index]* event.target.value ;
+    console.log(tabPrice)
+    let totalPrice = 0;
+    for(tab of tabPrice){
+        totalPrice += tab;
+    } 
+    document.getElementById("totalPrice").textContent = totalPrice;    
+}
+
+function changeTotalPrice2(element, index){
+    tabPrice[index] = JSON.parse(element.parentElement.parentElement.previousElementSibling.children[2].textContent.split(" ")[0]);  
+    document.getElementById("totalPrice").textContent = tabPrice; 
+}
+   
+
+               
 
 
 
