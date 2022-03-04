@@ -2,7 +2,7 @@ let tabQuantity = [];
 let sumQuantity = 0;
 let tabPrice = [];
 let sumPrice = 0;
-let sumtest = [];
+let cartPrice = [];
 for(let i = 0; i < localStorage.length; i++){
     //let name = localStorage.key(i).split(" ")[0] + " " + localStorage.key(i).split(" ")[1];
     let color = localStorage.key(i).split(" ")[2];
@@ -22,7 +22,7 @@ for(let i = 0; i < localStorage.length; i++){
     })
     .then(data => {
         
-        sumtest.push(data.price);
+        cartPrice.push(data.price);
         
         document.getElementById("cart__items").innerHTML += `   <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                                                                     <div class="cart__item__img">
@@ -50,9 +50,10 @@ for(let i = 0; i < localStorage.length; i++){
         let deleteButton = document.getElementsByClassName("deleteItem");
         for(let i = 0; i < deleteButton.length; i ++){
             deleteButton[i].addEventListener("click", function(e){
-            deleteCart(this);
-            deleteStorage(this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.innerHTML+ " " + this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML);
-            })
+                deleteCart(this);
+                deleteStorage(this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.innerHTML+ " " + this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML);
+                deleteTotalQuantity(i);
+        })
         }
         
         let oldQuantity = document.querySelectorAll(".cart__item__content__settings__quantity input");
@@ -101,14 +102,16 @@ function changeQuantityCartInStorage(element){
 }
 
 function changePriceCart(index){
-    if(document.querySelectorAll(".cart__item__content__description")){
-        document.querySelectorAll(".cart__item__content__description")[index].querySelectorAll("p")[1].textContent = (event.target.value)*sumtest[index] + " €";
+    if( document.querySelectorAll(".cart__item__content__description")[index].querySelectorAll("p")[1]){
+        document.querySelectorAll(".cart__item__content__description")[index].querySelectorAll("p")[1].textContent = (event.target.value)*cartPrice[index] + " €";
     }
 }
 
 function totalQuantity(){
     for(tab of tabQuantity){
+        if(tab){
         sumQuantity += parseInt(tab);
+        }
     }
 }
 
@@ -121,6 +124,13 @@ function changeTotalQuantity(index){
     sumQuantity = 0;
     totalQuantity();
     totalQuantityHTML();
+}
+
+function deleteTotalQuantity(index){
+    delete tabQuantity[index];
+    sumQuantity = 0;
+    totalQuantity();
+    totalQuantityHTML()
 }
 
 function totalPrice(){
