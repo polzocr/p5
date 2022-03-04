@@ -1,12 +1,15 @@
-let tab = [];
-let sum = 0;
+let tabQuantity = [];
+let sumQuantity = 0;
+let tabPrice = [];
+let sumPrice = 0;
 for(let i = 0; i < localStorage.length; i++){
     //let name = localStorage.key(i).split(" ")[0] + " " + localStorage.key(i).split(" ")[1];
     let color = localStorage.key(i).split(" ")[2];
     let getInfo = JSON.parse(localStorage.getItem(localStorage.key(i)));
     let id = getInfo[0];
     let quantity = getInfo[2];
-    tab.push(quantity);
+    tabQuantity.push(quantity);
+    
     
     fetch("http://localhost:3000/api/products/" + id)
     .then(res => {
@@ -17,6 +20,7 @@ for(let i = 0; i < localStorage.length; i++){
         }
     })
     .then(data => {
+        tabPrice.push(data.price*quantity);
         document.getElementById("cart__items").innerHTML += `   <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                                                                     <div class="cart__item__img">
                                                                         <img src="${data.imageUrl}" alt="Photographie d'un canapé">
@@ -39,7 +43,7 @@ for(let i = 0; i < localStorage.length; i++){
                                                                     </div>
                                                                 </article> `
 
-    
+                                                                
         let deleteButton = document.getElementsByClassName("deleteItem");
         for(let i = 0; i < deleteButton.length; i ++){
             deleteButton[i].addEventListener("click", function(e){
@@ -55,13 +59,17 @@ for(let i = 0; i < localStorage.length; i++){
                 changeQuantityCartInHTML(this);
                 changeQuantityCartInStorage(this);
                 changeTotalQuantity(i);
+                changeTotalPrice(i)
             })
         }
-    })    
+    })   
 }
+
 
 totalQuantity();
 totalQuantityHTML();
+totalPrice();
+totalPriceHTML();
 
 
 function deleteCart(element) {
@@ -85,23 +93,39 @@ function changeQuantityCartInStorage(element){
 }
 
 function totalQuantity(){
-    for(ta of tab){
-        sum += parseInt(ta);
+    for(tab of tabQuantity){
+        sumQuantity += parseInt(tab);
     }
-    console.log(sum);
 }
 
 function totalQuantityHTML(){
-    document.getElementById("totalQuantity").textContent = sum;
+    document.getElementById("totalQuantity").textContent = sumQuantity;
 }
 
 function changeTotalQuantity(index){
-    tab[index] = event.target.value;
-    sum = 0;
+    tabQuantity[index] = event.target.value;
+    sumQuantity = 0;
     totalQuantity();
     totalQuantityHTML();
 }
 
+function totalPrice(){
+    for(tab of tabPrice){
+        sumPrice += parseInt(tab);
+    }
+}
+
+function totalPriceHTML(){
+    document.getElementById("totalPrice").textContent = sumPrice;
+}
+
+function changeTotalPrice(index){
+    tabPrice[index] = event.target.value;
+    sumPrice = 0;
+    totalPrice();
+    totalPriceHTML();
+}
+console.log(tabPrice)
 
 
 
