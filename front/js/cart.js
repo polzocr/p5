@@ -60,7 +60,8 @@ for(let i = 0; i < localStorage.length; i++){
     })    
 }
 
-
+totalQuantity();
+totalQuantityHTML();
 
 
 function deleteCart(element) {
@@ -90,11 +91,18 @@ function totalQuantity(){
     console.log(sum);
 }
 
+function totalQuantityHTML(){
+    document.getElementById("totalQuantity").textContent = sum;
+}
+
 function changeTotalQuantity(index){
     tab[index] = event.target.value;
     sum = 0;
     totalQuantity();
+    totalQuantityHTML();
 }
+
+
 
 
 
