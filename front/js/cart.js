@@ -46,33 +46,35 @@ for(let i = 0; i < localStorage.length; i++){
                                                                     </div>
                                                                 </article> `
 
-                                                                
+             
+        setTotalPrice(data.price, quantity);
+
         let deleteButton = document.getElementsByClassName("deleteItem");
         for(let i = 0; i < deleteButton.length; i ++){
             deleteButton[i].addEventListener("click", function(e){
                 deleteCart(this);
                 deleteStorage(this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.innerHTML+ " " + this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML);
                 deleteTotalQuantity(i);
+                reduceTotalPrice(i);
         })
         }
         
         let oldQuantity = document.querySelectorAll(".cart__item__content__settings__quantity input");
-       
-
         for(let i = 0; i < oldQuantity.length; i++ ){
             oldQuantity[i].addEventListener("change", function(event){
                 changeQuantityCartInHTML(this);
                 changeQuantityCartInStorage(this);
-                changePriceCart(i)
+                changePriceCart(i);
                 changeTotalQuantity(i);
                 changeTotalPrice(i);
                
             
             })
         }
+        
     })   
 }
-
+  
 
 totalQuantity();
 totalQuantityHTML();
@@ -80,12 +82,13 @@ totalPrice();
 totalPriceHTML();
 
 
+
 function deleteCart(element) {
     element.closest("article").remove();
 }
 
 function deleteStorage(name){
-    localStorage.removeItem(name)
+    localStorage.removeItem(name);
 }
 
 
@@ -95,7 +98,7 @@ function changeQuantityCartInHTML(element){
 
 function changeQuantityCartInStorage(element){
     let nameCart = element.parentElement.parentElement.previousElementSibling.children[0].innerHTML + " " + element.parentElement.parentElement.previousElementSibling.children[1].innerHTML
-    let findElementStorage = localStorage.getItem(nameCart)
+    let findElementStorage = localStorage.getItem(nameCart);
     let findQuantity = JSON.parse(findElementStorage);
     findQuantity[2] = event.target.value;
     localStorage.setItem(nameCart, JSON.stringify(findQuantity));
@@ -130,7 +133,7 @@ function deleteTotalQuantity(index){
     delete tabQuantity[index];
     sumQuantity = 0;
     totalQuantity();
-    totalQuantityHTML()
+    totalQuantityHTML();
 }
 
 function totalPrice(){
@@ -149,7 +152,24 @@ function changeTotalPrice(index){
     totalPrice();
     totalPriceHTML();
 }
-console.log(tabPrice)
+
+
+function setTotalPrice(data, quantity){
+    
+    tabPrice.push(data*quantity); 
+    let totalPrice= 0;
+    for(tab of tabPrice){
+        totalPrice += tab;
+    } 
+    document.getElementById("totalPrice").textContent = totalPrice;
+}
+
+function reduceTotalPrice(index){
+    document.getElementById("totalPrice").textContent = parseInt(document.getElementById("totalPrice").textContent)-parseInt(tabPrice[index])
+}
+               
+
+
 
 
 
