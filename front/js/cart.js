@@ -2,6 +2,7 @@ let tabQuantity = [];
 let sumQuantity = 0;
 let tabPrice = [];
 let sumPrice = 0;
+let sumtest = [];
 for(let i = 0; i < localStorage.length; i++){
     //let name = localStorage.key(i).split(" ")[0] + " " + localStorage.key(i).split(" ")[1];
     let color = localStorage.key(i).split(" ")[2];
@@ -20,7 +21,9 @@ for(let i = 0; i < localStorage.length; i++){
         }
     })
     .then(data => {
-        tabPrice.push(data.price*quantity);
+        
+        sumtest.push(data.price);
+        
         document.getElementById("cart__items").innerHTML += `   <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                                                                     <div class="cart__item__img">
                                                                         <img src="${data.imageUrl}" alt="Photographie d'un canapé">
@@ -53,13 +56,17 @@ for(let i = 0; i < localStorage.length; i++){
         }
         
         let oldQuantity = document.querySelectorAll(".cart__item__content__settings__quantity input");
-        
+       
+
         for(let i = 0; i < oldQuantity.length; i++ ){
             oldQuantity[i].addEventListener("change", function(event){
                 changeQuantityCartInHTML(this);
                 changeQuantityCartInStorage(this);
+                changePriceCart(i)
                 changeTotalQuantity(i);
-                changeTotalPrice(i)
+                changeTotalPrice(i);
+               
+            
             })
         }
     })   
@@ -80,6 +87,7 @@ function deleteStorage(name){
     localStorage.removeItem(name)
 }
 
+
 function changeQuantityCartInHTML(element){
     element.setAttribute("value", event.target.value);
 }
@@ -90,6 +98,12 @@ function changeQuantityCartInStorage(element){
     let findQuantity = JSON.parse(findElementStorage);
     findQuantity[2] = event.target.value;
     localStorage.setItem(nameCart, JSON.stringify(findQuantity));
+}
+
+function changePriceCart(index){
+    if(document.querySelectorAll(".cart__item__content__description")){
+        document.querySelectorAll(".cart__item__content__description")[index].querySelectorAll("p")[1].textContent = (event.target.value)*sumtest[index] + " €";
+    }
 }
 
 function totalQuantity(){
