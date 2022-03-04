@@ -3,7 +3,6 @@ let sumQuantity = 0;
 let tabPrice = [];
 let sumPrice = 0;
 let cartPrice = [];
-let seum;
 for(let i = 0; i < localStorage.length; i++){
     //let name = localStorage.key(i).split(" ")[0] + " " + localStorage.key(i).split(" ")[1];
     let color = localStorage.key(i).split(" ")[2];
@@ -48,7 +47,7 @@ for(let i = 0; i < localStorage.length; i++){
                                                                 </article> `
 
              
-        TotalPrice();
+        totalPrice();
 
         let deleteButton = document.getElementsByClassName("deleteItem");
         for(let i = 0; i < deleteButton.length; i ++){
@@ -56,7 +55,7 @@ for(let i = 0; i < localStorage.length; i++){
                 deleteCart(this);
                 deleteStorage(this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.innerHTML+ " " + this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML);
                 deleteTotalQuantity(i);
-                TotalPrice();
+                totalPrice();
         })
         }
         
@@ -67,7 +66,7 @@ for(let i = 0; i < localStorage.length; i++){
                 changeQuantityCartInStorage(this);
                 changePriceCart(this, i);
                 changeTotalQuantity(i);
-                TotalPrice() 
+                totalPrice() 
             })
         }
         
@@ -149,15 +148,7 @@ function setTotalPrice(data, quantity){
     document.getElementById("totalPrice").textContent = totalPrice;
 }
 
-function TotalPrice(){
-    elements = document.getElementsByClassName("cart__item__content__description");
-    let seum = 0;
-    for(element of elements){
-        seum += JSON.parse(element.getElementsByTagName("p")[1].textContent.split(" ")[0]);
-        
-    }
-    document.getElementById("totalPrice").textContent = seum;
-}
+
 
 function changeTotalPrice(index){
     console.log(tabPrice);
@@ -173,6 +164,16 @@ function changeTotalPrice(index){
 function changeTotalPrice2(element, index){
     tabPrice[index] = JSON.parse(element.parentElement.parentElement.previousElementSibling.children[2].textContent.split(" ")[0]);  
     document.getElementById("totalPrice").textContent = tabPrice; 
+}
+
+function totalPrice(){
+    elements = document.getElementsByClassName("cart__item__content__description");
+    let totalPrice = 0;
+    for(element of elements){
+        totalPrice += JSON.parse(element.getElementsByTagName("p")[1].textContent.split(" ")[0]);
+        
+    }
+    document.getElementById("totalPrice").textContent = totalPrice;
 }
    
 
