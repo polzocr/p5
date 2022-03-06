@@ -175,6 +175,64 @@ function totalPrice(){
     }
     document.getElementById("totalPrice").textContent = totalPrice;
 }
+
+
+
+
+
+
+document.querySelector(".cart__order form").setAttribute("action", "./confirmation.html");
+
+validateForm();
+validateItemForm("firstName", "Un prenom" );
+validateItemForm("lastName", "Un nom de famille" );
+validateItemForm("address", "Une adresse" );
+validateItemForm("city", "Une ville" );
+validateItemForm("email", "Un e-mail" );
+
+
+function validateItemForm(name, nameFrench){
+    document.getElementById(name).addEventListener("input", function(event){
+        let value = event.target.value;
+        if(value == "" || value == "jackie"){
+            document.getElementById(name + "ErrorMsg").textContent = nameFrench + " valide doit être renseigné";
+            return false;
+        } else {
+            document.getElementById( name + "ErrorMsg").textContent = "";
+            return true;
+        }
+    })
+}
+
+
+function notValid(name){
+    if(document.getElementById(name +"ErrorMsg").textContent == ""){
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function validateForm(){
+    document.querySelector(".cart__order form").addEventListener("submit", function(event){
+        if (notValid("firstName") || notValid("lastName") || notValid("address") || notValid("city") || notValid("email")) {
+            event.preventDefault();
+        }
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
    
 
                
