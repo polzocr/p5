@@ -181,7 +181,12 @@ function totalPrice(){
 
 
 
+
+
+
+
 document.querySelector(".cart__order form").setAttribute("action", "./confirmation.html");
+
 
 validateForm();
 validateItemForm("firstName", "Un prenom" );
@@ -206,16 +211,25 @@ function validateItemForm(name, nameFrench){
 
 
 function notValid(name){
-    if(document.getElementById(name +"ErrorMsg").textContent == ""){
-        return false;
-    } else {
+    if(document.getElementById(name +"ErrorMsg").textContent !== "" ){
         return true;
+    } else {
+        return false;
+    }
+}
+
+function isEmpty(){
+    let inputs = document.querySelectorAll(".cart__order__form__question input");
+    for(input of inputs){
+        if(input.value == ""){
+            return true;
+        }
     }
 }
 
 function validateForm(){
     document.querySelector(".cart__order form").addEventListener("submit", function(event){
-        if (notValid("firstName") || notValid("lastName") || notValid("address") || notValid("city") || notValid("email")) {
+        if (notValid("firstName") || notValid("lastName") || notValid("address") || notValid("city") || notValid("email") || isEmpty()) {
             event.preventDefault();
         }
     })
