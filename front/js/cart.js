@@ -142,7 +142,7 @@ function setTotalPrice(data, quantity){
     
     tabPrice.push(data*quantity); 
     let totalPrice= 0;
-    for(tab of tabPrice){
+    for(let tab of tabPrice){
         totalPrice += tab;
     } 
     document.getElementById("totalPrice").textContent = totalPrice;
@@ -167,9 +167,9 @@ function changeTotalPrice2(element, index){
 }
 
 function totalPrice(){
-    elements = document.getElementsByClassName("cart__item__content__description");
+    let elements = document.getElementsByClassName("cart__item__content__description");
     let totalPrice = 0;
-    for(element of elements){
+    for(let element of elements){
         totalPrice += JSON.parse(element.getElementsByTagName("p")[1].textContent.split(" ")[0]);
         
     }
@@ -215,7 +215,7 @@ function validateItemForm(name, nameFrench, regex){
 }
 
 
-function notValid(name){
+function noValid(name){
     if(document.getElementById(name +"ErrorMsg").textContent !== "" ){
         return true;
     } else {
@@ -225,7 +225,7 @@ function notValid(name){
 
 function isEmpty(){
     let inputs = document.querySelectorAll(".cart__order__form__question input");
-    for(input of inputs){
+    for(let input of inputs){
         if(input.value == ""){
             return true;
         }
@@ -234,7 +234,7 @@ function isEmpty(){
 
 function validateForm(){
     document.querySelector(".cart__order form").addEventListener("submit", function(event){
-        if (notValid("firstName") || notValid("lastName") || notValid("address") || notValid("city") || notValid("email") || isEmpty()) {
+        if (noValid("firstName") || noValid("lastName") || noValid("address") || noValid("city") || noValid("email") || isEmpty()) {
             event.preventDefault();
         }
     })
