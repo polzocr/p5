@@ -186,25 +186,30 @@ function totalPrice(){
 
 
 document.querySelector(".cart__order form").setAttribute("action", "./confirmation.html");
-
-
+let firstNameRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç,.'-]+$/u;
+let lastNameRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç ,.'-]+$/u;
+let addressRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç ,.'-123456789]+$/u;
+let cityRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç ,.'-]+$/u;
+let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+/*
 validateForm();
-validateItemForm("firstName", "Un prenom" );
-validateItemForm("lastName", "Un nom de famille" );
-validateItemForm("address", "Une adresse" );
-validateItemForm("city", "Une ville" );
-validateItemForm("email", "Un e-mail" );
+validateItemForm("firstName", "Un prenom", firstNameRegex);
+validateItemForm("lastName", "Un nom de famille", lastNameRegex);
+validateItemForm("address", "Une adresse", addressRegex);
+validateItemForm("city", "Une ville", cityRegex );
+validateItemForm("email", "Un e-mail", emailRegex );
+*/
 
 
-function validateItemForm(name, nameFrench){
+function validateItemForm(name, nameFrench, regex){
     document.getElementById(name).addEventListener("input", function(event){
         let value = event.target.value;
-        if(value == "" || value == "jackie"){
-            document.getElementById(name + "ErrorMsg").textContent = nameFrench + " valide doit être renseigné";
-            return false;
-        } else {
+        if(value !== "" && regex.test(value)){
             document.getElementById( name + "ErrorMsg").textContent = "";
             return true;
+        } else {
+            document.getElementById(name + "ErrorMsg").textContent = nameFrench + " valide doit être renseigné";
+            return false;
         }
     })
 }
@@ -240,6 +245,92 @@ function validateForm(){
 
 
 
+
+
+
+
+/*==============================CETTE PARTIE LA================================================================================================*/
+/*=============================================================================================================================================*/
+
+/*=============================================================================================================================================*/
+/*=============================================================================================================================================*/
+function validateItemForm2(name, nameFrench){
+    document.getElementById(name).addEventListener("input", function(event){
+        let value = event.target.value;
+        if(value == "" || value == "jackie"){
+            document.getElementById(name + "ErrorMsg").textContent = nameFrench + " valide doit être renseigné";
+            validateForm2();
+        } else {
+            document.getElementById( name + "ErrorMsg").textContent = "";
+            
+        }
+    })
+}
+
+function validateForm2(){
+        document.querySelector(".cart__order form").addEventListener("submit", function(event){
+        event.preventDefault();
+        })
+}
+
+//validateItemForm2("firstName", "Un prenom" );
+
+
+
+/*=============================================================================================================================================*/
+/*=============================================================================================================================================*/
+
+function validateItemForm3(name, nameFrench, regex){
+    document.getElementById(name).addEventListener("input", function(event){
+        let value = event.target.value;
+        if(value !== "" && regex.test(value)){
+            document.getElementById( name + "ErrorMsg").textContent = "";
+        } else {
+            document.getElementById(name + "ErrorMsg").textContent = nameFrench + " valide doit être renseigné";
+        }
+    })
+}
+
+
+function notValid(value, regex){
+    if(value !== "" && regex.test(value)){
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function validateForm3(){
+    document.querySelector(".cart__order form").addEventListener("submit", function(event){
+        let firstName = document.getElementById("firstName").value;
+        let lastName = document.getElementById("lastName").value;
+        let address = document.getElementById("address").value;
+        let city = document.getElementById("city").value;
+        let email = document.getElementById("email").value;
+        if(notValid(firstName, firstNameRegex) || notValid(lastName, lastNameRegex) || notValid(address, addressRegex) || notValid(city, cityRegex) || notValid(email, emailRegex) || isEmpty()){
+            event.preventDefault();
+        } 
+})
+}
+
+
+function getRegex(value){
+    return Object.keys(value)[0]+"Regex";
+}
+
+
+validateItemForm3("firstName", "Un prenom", firstNameRegex);
+validateItemForm3("lastName", "Un nom de famille", lastNameRegex);
+validateItemForm3("address", "Une adresse", addressRegex);
+validateItemForm3("city", "Une ville", cityRegex );
+validateItemForm3("email", "Un e-mail", emailRegex );
+validateForm3();
+
+
+
+
+/*=============================================================================================================================================*/
+/*=============================================================================================================================================*/
 
 
 
