@@ -1,3 +1,4 @@
+import {Contact} from './contact.js';
 let tabQuantity = [];
 let sumQuantity = 0;
 let tabPrice = [];
@@ -307,10 +308,14 @@ function validateForm3(){
         let email = document.getElementById("email").value;
         if(notValid(firstName, firstNameRegex) || notValid(lastName, lastNameRegex) || notValid(address, addressRegex) || notValid(city, cityRegex) || notValid(email, emailRegex) || isEmpty()){
             event.preventDefault();
-            console.log("pass pas")
         } else {
             event.preventDefault();
-            console.log("tout est ok")
+            const contact = new Contact(firstName,lastName,address,city,email);
+            let tabProduct = [];
+            for (let i = 0; i < localStorage.length; i++){
+                let idProduct = JSON.parse(localStorage.getItem(localStorage.key(i)))[0];
+                tabProduct.push(idProduct);
+            }
         }
     })
 }
