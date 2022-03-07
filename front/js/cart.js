@@ -275,8 +275,6 @@ function validateForm2(){
 
 //validateItemForm2("firstName", "Un prenom" );
 
-
-
 /*=============================================================================================================================================*/
 /*=============================================================================================================================================*/
 
@@ -310,7 +308,7 @@ function validateForm3(){
         if(notValid(firstName, firstNameRegex) || notValid(lastName, lastNameRegex) || notValid(address, addressRegex) || notValid(city, cityRegex) || notValid(email, emailRegex) || isEmpty()){
             event.preventDefault();
         } 
-})
+    })
 }
 
 
