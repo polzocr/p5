@@ -109,7 +109,7 @@ function changePriceCart(element, index){
 }
 
 function totalQuantity(){
-    for(tab of tabQuantity){
+    for(let tab of tabQuantity){
         if(tab){
         sumQuantity += parseInt(tab);
         }
@@ -307,7 +307,11 @@ function validateForm3(){
         let email = document.getElementById("email").value;
         if(notValid(firstName, firstNameRegex) || notValid(lastName, lastNameRegex) || notValid(address, addressRegex) || notValid(city, cityRegex) || notValid(email, emailRegex) || isEmpty()){
             event.preventDefault();
-        } 
+            console.log("pass pas")
+        } else {
+            event.preventDefault();
+            console.log("tout est ok")
+        }
     })
 }
 
