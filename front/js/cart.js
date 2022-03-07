@@ -1,3 +1,5 @@
+import {Contact} from './contact.js'; 
+
 let tabQuantity = [];
 let sumQuantity = 0;
 let tabPrice = [];
@@ -109,7 +111,7 @@ function changePriceCart(element, index){
 }
 
 function totalQuantity(){
-    for(tab of tabQuantity){
+    for(let tab of tabQuantity){
         if(tab){
         sumQuantity += parseInt(tab);
         }
@@ -167,9 +169,9 @@ function changeTotalPrice2(element, index){
 }
 
 function totalPrice(){
-    elements = document.getElementsByClassName("cart__item__content__description");
+    let elements = document.getElementsByClassName("cart__item__content__description");
     let totalPrice = 0;
-    for(element of elements){
+    for(let element of elements){
         totalPrice += JSON.parse(element.getElementsByTagName("p")[1].textContent.split(" ")[0]);
         
     }
@@ -215,7 +217,7 @@ function validateItemForm(name, nameFrench, regex){
 }
 
 
-function notValid(name){
+function noValid(name){
     if(document.getElementById(name +"ErrorMsg").textContent !== "" ){
         return true;
     } else {
@@ -234,7 +236,7 @@ function isEmpty(){
 
 function validateForm(){
     document.querySelector(".cart__order form").addEventListener("submit", function(event){
-        if (notValid("firstName") || notValid("lastName") || notValid("address") || notValid("city") || notValid("email") || isEmpty()) {
+        if (noValid("firstName") || noValid("lastName") || noValid("address") || noValid("city") || noValid("email") || isEmpty()) {
             event.preventDefault();
         }
     })
@@ -307,7 +309,11 @@ function validateForm3(){
         let email = document.getElementById("email").value;
         if(notValid(firstName, firstNameRegex) || notValid(lastName, lastNameRegex) || notValid(address, addressRegex) || notValid(city, cityRegex) || notValid(email, emailRegex) || isEmpty()){
             event.preventDefault();
-        } 
+            console.log(notValid(firstName, firstNameRegex))
+        } else {
+            
+            event.preventDefault();
+        }
     })
 }
 
@@ -326,15 +332,24 @@ validateForm3();
 
 
 
-
 /*=============================================================================================================================================*/
 /*=============================================================================================================================================*/
 
+/*else {
+    event.preventDefault();
+    console.log("cela Marche");
+    const contact = new Contact(firstName, lastName, address, city, email);
+    let productTab = [];
+    for(let i = 0; i < localStorage.length; i++){
+        let localId = JSON.parse(localStorage.getItem(localStorage.key(i)))[0];
+        productTab.push(JSON.stringify(localId));
+    }
+    console.log(contact);
+    console.log(productTab);
 
+}
 
-
-
-
+*/
 
    
 
