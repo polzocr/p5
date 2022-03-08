@@ -1,33 +1,12 @@
-/*  Méthode avec toutes les valeurs dans l'url
+//on importe l'url de tous les produits
+import {urlAllProducts} from './url/url.js'; 
+import {elementExist} from './fonctions/fonctions_products.js';
 
-let url = new URL(window.location.href);
+let url = new URL(window.location.href); // on récupère l'url de la page actuelle
+let id = url.searchParams.get("id"); //on recupère l'id de cette page 
 
-let id = url.searchParams.get("id");
-let imgUrl = url.searchParams.get("img");
-let name = url.searchParams.get("name");
-let description = url.searchParams.get("description");
-let price = url.searchParams.get("price");
-let colors = url.searchParams.get("colors").split(",");
-
-
-
-
-document.getElementsByClassName("item__img")[0].innerHTML = `<img src="${imgUrl}" alt="Photographie d'un canapé">`;
-document.getElementById("title").textContent = name;
-document.getElementById("price").textContent = price;
-document.getElementById("description").textContent = description;
-
-for(color of colors){
-    document.getElementById("colors").innerHTML += `<option value="${color}">${color}</option>` 
-}
-
-*/
-
-let url = new URL(window.location.href);
-let id = url.searchParams.get("id");
-
-
-fetch("http://localhost:3000/api/products/" + id)
+//requête GET sur un produit en particulier
+fetch(urlAllProducts + id) 
 .then( res => {
     if (res.ok) {
         return res.json();
@@ -36,45 +15,24 @@ fetch("http://localhost:3000/api/products/" + id)
     }
 })
 .then(data => {
-
+    //on affiche tous les éléments dans le html
     document.getElementsByClassName("item__img")[0].innerHTML = `<img src="${data.imageUrl}" alt="Photographie d'un canapé">`;
     document.getElementById("title").textContent = data.name;
     document.getElementById("price").textContent = data.price;
     document.getElementById("description").textContent = data.description;
-    for(color of data.colors){
+    
+    for(let color of data.colors){      //boucle for pour afficher toutes les couleurs disponibles
         document.getElementById("colors").innerHTML += `<option value="${color}">${color}</option>` 
     }
-    document.getElementById("addToCart").addEventListener('click', function(event){
-        let quantityValue = document.getElementById("quantity").value;
-        let colorValue =  document.getElementById("colors").value;
-        elementExist(data, quantityValue, colorValue);
+    document.getElementById("addToCart").addEventListener('click', function(event){ //on ecoute l'évènement click sur le bouton ajout au panier
+        let quantityValue = document.getElementById("quantity").value;              //on créer une variable qui recupère la quantité choisie
+        let colorValue =  document.getElementById("colors").value;                  //on créer une variable qui récupère la couleur choisie
+        elementExist(data, quantityValue, colorValue);                              //On appelle notre fonction qui va ajouter ces éléments dans le panier et le localStorage
     })
 })
 
 document.getElementById("quantity").value = 1; //mise à 1 de la value pour eviter de commander 0 objet
 
-function addToCart(data, quantity, color){
-    let tabProduct = [];
-    tabProduct.push(data._id, color, quantity);
-    localStorage.setItem(data.name + " " + color, JSON.stringify(tabProduct));  
-}
-
-function elementExist(data, quantity, color){
-    if(quantity == 0 || color == 0){
-        alert("Veuillez au moins un élément avec une couleur")
-    } else if (localStorage.getItem(data.name + " " + color)) { 
-    changeQuantity(data, quantity, color); //l'élement existe déja, on le modifie si besoin
-    } else { 
-        addToCart(data, quantity, color); // l'élement n'existe pas, on l'ajoute
-    }
-}
-
-function changeQuantity(data, quantity, color){
-    let name = localStorage.getItem(data.name + " " + color);
-    let oldQuantity = JSON.parse(name)[2];
-    let newQuantity = parseInt(quantity) + parseInt(oldQuantity);
-    addToCart(data,newQuantity, color);
-}
 
 
 
