@@ -263,10 +263,11 @@ function send(value) {
       }
     })
     .then(function(value) {
-        let url = new URL("http://127.0.0.1:5500/front/html/confirmation.html");
-        url.searchParams.append("orderId", value.orderId);
-        window.location.href= url;
-       // window.location.href="./confirmation.html?id="+value.orderId
+        //let url = new URL("http://127.0.0.1:5500/front/html/confirmation.html");
+        //url.searchParams.append("orderId", value.orderId);
+        //window.location.href= url;
+        localStorage.clear();
+        window.location.href="./confirmation.html?orderId="+value.orderId
     });
   }
 
