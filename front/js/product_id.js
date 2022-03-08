@@ -45,37 +45,37 @@ fetch("http://localhost:3000/api/products/" + id)
         document.getElementById("colors").innerHTML += `<option value="${color}">${color}</option>` 
     }
     document.getElementById("addToCart").addEventListener('click', function(event){
-        elementExist(data);
+        let quantityValue = document.getElementById("quantity").value;
+        let colorValue =  document.getElementById("colors").value;
+        elementExist(data, quantityValue, colorValue);
     })
 })
 
+document.getElementById("quantity").value = 1; //mise à 1 de la value pour eviter de commander 0 objet
 
-function addToCart(data, quantity){
+function addToCart(data, quantity, color){
     let tabProduct = [];
-    tabProduct.push(data._id, document.getElementById("colors").value, quantity);
-    localStorage.setItem(data.name + " " + document.getElementById("colors").value, JSON.stringify(tabProduct));  
-
+    tabProduct.push(data._id, color, quantity);
+    localStorage.setItem(data.name + " " + color, JSON.stringify(tabProduct));  
 }
 
-function elementExist(data){
-    if(localStorage.getItem(data.name + " " + document.getElementById("colors").value)) {
-        console.log("l'élément existe déja, on le modifie si besoin");
-        changeQuantity(data);
-    } else {
-        console.log("l'élément n'existe pas");
-        addToCart(data, document.getElementById("quantity").value);
+function elementExist(data, quantity, color){
+    console.log(color)
+    if(quantity == 0 || color == 0){
+        alert("Veuillez au moins un élément avec une couleur")
+    } else if (localStorage.getItem(data.name + " " + color)) { 
+    changeQuantity(data, quantity, color); //l'élement existe déja, on le modifie si besoin
+    } else { 
+        addToCart(data, quantity, color); // l'élement n'existe pas, on l'ajoute
     }
 }
 
-function changeQuantity(data){
-    let name = localStorage.getItem(data.name + " " + document.getElementById("colors").value);
+function changeQuantity(data, quantity, color){
+    let name = localStorage.getItem(data.name + " " + color);
     let oldQuantity = JSON.parse(name)[2];
-    let newQuantity = parseInt(document.getElementById("quantity").value) + parseInt(oldQuantity);
+    let newQuantity = parseInt(quantity) + parseInt(oldQuantity);
     console.log(newQuantity);
-    addToCart(data,newQuantity);
-
-
-  
+    addToCart(data,newQuantity, color);
 }
 
 
