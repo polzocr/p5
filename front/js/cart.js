@@ -231,7 +231,10 @@ function validateForm(){
         let address = document.getElementById("address").value;
         let city = document.getElementById("city").value;
         let email = document.getElementById("email").value;
-        if(notValid(firstName, firstNameRegex) || notValid(lastName, lastNameRegex) || notValid(address, addressRegex) || notValid(city, cityRegex) || notValid(email, emailRegex) || isEmpty()){
+        if(localStorage.length == 0){
+            event.preventDefault();
+            alert("Votre panier est vide");
+        } else if(notValid(firstName, firstNameRegex) || notValid(lastName, lastNameRegex) || notValid(address, addressRegex) || notValid(city, cityRegex) || notValid(email, emailRegex) || isEmpty()){
             event.preventDefault();
         } else {
             event.preventDefault();
@@ -272,18 +275,14 @@ function send(value) {
   }
 
 
-
-function getRegex(value){
-    return Object.keys(value)[0]+"Regex";
-}
-
-
 validateItemForm("firstName", "Un prenom", firstNameRegex);
 validateItemForm("lastName", "Un nom de famille", lastNameRegex);
 validateItemForm("address", "Une adresse", addressRegex);
 validateItemForm("city", "Une ville", cityRegex );
 validateItemForm("email", "Un e-mail", emailRegex );
 validateForm();
+
+
 
 
 

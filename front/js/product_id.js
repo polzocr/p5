@@ -60,7 +60,6 @@ function addToCart(data, quantity, color){
 }
 
 function elementExist(data, quantity, color){
-    console.log(color)
     if(quantity == 0 || color == 0){
         alert("Veuillez au moins un élément avec une couleur")
     } else if (localStorage.getItem(data.name + " " + color)) { 
@@ -74,7 +73,6 @@ function changeQuantity(data, quantity, color){
     let name = localStorage.getItem(data.name + " " + color);
     let oldQuantity = JSON.parse(name)[2];
     let newQuantity = parseInt(quantity) + parseInt(oldQuantity);
-    console.log(newQuantity);
     addToCart(data,newQuantity, color);
 }
 
