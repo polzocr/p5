@@ -186,43 +186,13 @@ function totalPrice(){
 
 
 
-document.querySelector(".cart__order form").setAttribute("action", "./confirmation.html");
+
+
 let firstNameRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç,.'-]+$/u;
 let lastNameRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç ,.'-]+$/u;
 let addressRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç ,.'-123456789]+$/u;
 let cityRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç ,.'-]+$/u;
 let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-/*
-validateForm();
-validateItemForm("firstName", "Un prenom", firstNameRegex);
-validateItemForm("lastName", "Un nom de famille", lastNameRegex);
-validateItemForm("address", "Une adresse", addressRegex);
-validateItemForm("city", "Une ville", cityRegex );
-validateItemForm("email", "Un e-mail", emailRegex );
-*/
-
-
-function validateItemForm(name, nameFrench, regex){
-    document.getElementById(name).addEventListener("input", function(event){
-        let value = event.target.value;
-        if(value !== "" && regex.test(value)){
-            document.getElementById( name + "ErrorMsg").textContent = "";
-            return true;
-        } else {
-            document.getElementById(name + "ErrorMsg").textContent = nameFrench + " valide doit être renseigné";
-            return false;
-        }
-    })
-}
-
-
-function noValid(name){
-    if(document.getElementById(name +"ErrorMsg").textContent !== "" ){
-        return true;
-    } else {
-        return false;
-    }
-}
 
 function isEmpty(){
     let inputs = document.querySelectorAll(".cart__order__form__question input");
@@ -233,53 +203,8 @@ function isEmpty(){
     }
 }
 
-function validateForm(){
-    document.querySelector(".cart__order form").addEventListener("submit", function(event){
-        if (noValid("firstName") || noValid("lastName") || noValid("address") || noValid("city") || noValid("email") || isEmpty()) {
-            event.preventDefault();
-        }
-    })
-}
 
-
-
-
-
-
-
-
-
-
-/*==============================CETTE PARTIE LA================================================================================================*/
-/*=============================================================================================================================================*/
-
-/*=============================================================================================================================================*/
-/*=============================================================================================================================================*/
-function validateItemForm2(name, nameFrench){
-    document.getElementById(name).addEventListener("input", function(event){
-        let value = event.target.value;
-        if(value == "" || value == "jackie"){
-            document.getElementById(name + "ErrorMsg").textContent = nameFrench + " valide doit être renseigné";
-            validateForm2();
-        } else {
-            document.getElementById( name + "ErrorMsg").textContent = "";
-            
-        }
-    })
-}
-
-function validateForm2(){
-        document.querySelector(".cart__order form").addEventListener("submit", function(event){
-        event.preventDefault();
-        })
-}
-
-//validateItemForm2("firstName", "Un prenom" );
-
-/*=============================================================================================================================================*/
-/*=============================================================================================================================================*/
-
-function validateItemForm3(name, nameFrench, regex){
+function validateItemForm(name, nameFrench, regex){
     document.getElementById(name).addEventListener("input", function(event){
         let value = event.target.value;
         if(value !== "" && regex.test(value)){
@@ -299,7 +224,7 @@ function notValid(value, regex){
     }
 }
 
-function validateForm3(){
+function validateForm(){
     document.querySelector(".cart__order form").addEventListener("submit", function(event){
         let firstName = document.getElementById("firstName").value;
         let lastName = document.getElementById("lastName").value;
@@ -311,14 +236,40 @@ function validateForm3(){
         } else {
             event.preventDefault();
             const contact = new Contact(firstName,lastName,address,city,email);
-            let tabProduct = [];
+            let products = [];
             for (let i = 0; i < localStorage.length; i++){
                 let idProduct = JSON.parse(localStorage.getItem(localStorage.key(i)))[0];
-                tabProduct.push(idProduct);
+                products.push(idProduct);
             }
+            
+            send({contact, products});
         }
     })
 }
+
+
+function send(value) {
+    fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json', 
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(value)
+    })
+    .then(function(res) {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then(function(value) {
+        let url = new URL("http://127.0.0.1:5500/front/html/confirmation.html");
+        url.searchParams.append("orderId", value.orderId);
+        window.location.href= url;
+       // window.location.href="./confirmation.html?id="+value.orderId
+    });
+  }
+
 
 
 function getRegex(value){
@@ -326,13 +277,12 @@ function getRegex(value){
 }
 
 
-validateItemForm3("firstName", "Un prenom", firstNameRegex);
-validateItemForm3("lastName", "Un nom de famille", lastNameRegex);
-validateItemForm3("address", "Une adresse", addressRegex);
-validateItemForm3("city", "Une ville", cityRegex );
-validateItemForm3("email", "Un e-mail", emailRegex );
-validateForm3();
-
+validateItemForm("firstName", "Un prenom", firstNameRegex);
+validateItemForm("lastName", "Un nom de famille", lastNameRegex);
+validateItemForm("address", "Une adresse", addressRegex);
+validateItemForm("city", "Une ville", cityRegex );
+validateItemForm("email", "Un e-mail", emailRegex );
+validateForm();
 
 
 
