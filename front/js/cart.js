@@ -63,11 +63,17 @@ for(let i = 0; i < localStorage.length; i++){
         let oldQuantity = document.querySelectorAll(".cart__item__content__settings__quantity input");
         for(let i = 0; i < oldQuantity.length; i++ ){
             oldQuantity[i].addEventListener("change", function(event){
-                changeQuantityCartInHTML(this);
-                changeQuantityCartInStorage(this);
-                changePriceCart(this, i);
-                changeTotalQuantity(i);
-                totalPrice() 
+                if(event.target.value == 0){
+                    alert("Veuillez supprimer l'élement");
+                    event.target.value = this.getAttribute("value");
+                } else {
+                    changeQuantityCartInHTML(this);
+                    changeQuantityCartInStorage(this);
+                    changePriceCart(this, i);
+                    changeTotalQuantity(i);
+                    totalPrice() 
+                }
+               
             })
         }
         
