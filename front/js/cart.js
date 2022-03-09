@@ -1,19 +1,37 @@
 import {Contact} from './contact.js';
-let tabQuantity = [];
-let sumQuantity = 0;
-let tabPrice = [];
-let sumPrice = 0;
-let cartPrice = [];
+import {urlAllProducts} from './url/url.js';
+import {firstNameRegex, lastNameRegex, addressRegex, cityRegex, emailRegex} from './utils/regex.js'; 
+
+// Initialisation de certaines variables 
+let tabQuantity = [];   
+let sumQuantity = 0;    
+let tabPrice = [];      
+let sumPrice = 0;       
+let cartPrice = [];     
+
+/*
+On va faire une boucle sur chaque élément du panier( dans le localStorage) : 
+    - on va récuperer la couleur et la quantité et l'id 
+    - on fait ensuite une requete GET pour récupérer les données relatives à cet élément et les afficher
+    - on creer un évenement qui ecoute le changement de quantité
+    - on créer un évenement qui écoute la suppression d'un élément
+*/
+
 for(let i = 0; i < localStorage.length; i++){
-    //let name = localStorage.key(i).split(" ")[0] + " " + localStorage.key(i).split(" ")[1];
-    let color = localStorage.key(i).split(" ")[2];
-    let getInfo = JSON.parse(localStorage.getItem(localStorage.key(i)));
-    let id = getInfo[0];
-    let quantity = getInfo[2];
-    tabQuantity.push(quantity);
+
+    let color = localStorage.key(i).split(" ")[2];  //recupère la couleur de l'élément
+    let getInfo = JSON.parse(localStorage.getItem(localStorage.key(i))); //recupère l'élément du panier
+    let id = getInfo[0];    //recupère l'id de l'élement
+    let quantity = getInfo[2]; //recupère la quantité de l'élément
+    tabQuantity.push(quantity); //on insère cette quantité dans un tableau
     
     
-    fetch("http://localhost:3000/api/products/" + id)
+ /*
+Requête GET pour afficher les données de chaque produits puis 
+ajouter à ces produits un évènement qui change la quantité et un autre 
+qui gère la suppression d'un produit
+ */   
+    fetch(urlAllProducts + id)
     .then(res => {
         if(res.ok) {
             return res.json();
@@ -23,7 +41,7 @@ for(let i = 0; i < localStorage.length; i++){
     })
     .then(data => {
         
-        cartPrice.push(data.price);
+        cartPrice.push(data.price); //on met le prix de chaque élement dans un tableau
         
         document.getElementById("cart__items").innerHTML += `   <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                                                                     <div class="cart__item__img">
@@ -48,30 +66,32 @@ for(let i = 0; i < localStorage.length; i++){
                                                                 </article> `
 
              
-        totalPrice();
+        
 
-        let deleteButton = document.getElementsByClassName("deleteItem");
-        for(let i = 0; i < deleteButton.length; i ++){
+
+        let deleteButton = document.getElementsByClassName("deleteItem"); // variable qui recupère les boutons supprimer
+        for(let i = 0; i < deleteButton.length; i ++){                    //evenement ajouter à chaque bouton
             deleteButton[i].addEventListener("click", function(e){
-                deleteCart(this);
+                deleteCart(this);   //supprimer le HTML
+                //supprimer le panier
                 deleteStorage(this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.innerHTML+ " " + this.parentNode.parentNode.parentElement.childNodes[0].nextElementSibling.firstChild.nextElementSibling.nextElementSibling.innerHTML);
-                deleteTotalQuantity(i);
-                totalPrice();
+                deleteTotalQuantity(i); //change la quantité totale d'articles
+                totalPrice();           //affiche le prix total du panier
         })
         }
         
-        let oldQuantity = document.querySelectorAll(".cart__item__content__settings__quantity input");
-        for(let i = 0; i < oldQuantity.length; i++ ){
+        let oldQuantity = document.querySelectorAll(".cart__item__content__settings__quantity input"); // variable qui recupère toutes les quantités
+        for(let i = 0; i < oldQuantity.length; i++ ){           //evenement ajouter à chaque changement de quantité
             oldQuantity[i].addEventListener("change", function(event){
-                if(event.target.value == 0){
+                if(event.target.value == 0){                    //si la quantité est passé à zero -> erreur
                     alert("Veuillez supprimer l'élement");
-                    event.target.value = this.getAttribute("value");
+                    event.target.value = this.getAttribute("value");    //on remet la quantité a comment elle était avant l'erreur
                 } else {
-                    changeQuantityCartInHTML(this);
-                    changeQuantityCartInStorage(this);
-                    changePriceCart(this, i);
-                    changeTotalQuantity(i);
-                    totalPrice() 
+                    changeQuantityCartInHTML(this);     //change la value dans le HTML
+                    changeQuantityCartInStorage(this);  // change la quantité dans le panier en localStorage
+                    changePriceCart(this, i);           // change le prix afficher par rapport au nombre d'éléments
+                    changeTotalQuantity(i);             //change la quantité totale d'articles
+                    totalPrice()                        //change le prix total
                 }
                
             })
@@ -80,9 +100,9 @@ for(let i = 0; i < localStorage.length; i++){
     })   
 }
   
-
-totalQuantity();
-totalQuantityHTML();
+totalPrice();           // Affichage du prix total du panier
+totalQuantity();        // Recuperation de la quantité totale 
+totalQuantityHTML();    // Affichage de cette quantité dans le HTML  
 
 
 
@@ -194,11 +214,7 @@ function totalPrice(){
 
 
 
-let firstNameRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç,.'-]+$/u;
-let lastNameRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç ,.'-]+$/u;
-let addressRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç ,.'-123456789]+$/u;
-let cityRegex = /^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõùúûüųūÿýżźñç ,.'-]+$/u;
-let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
 
 function isEmpty(){
     let inputs = document.querySelectorAll(".cart__order__form__question input");
