@@ -1,13 +1,14 @@
 import {Contact} from './contact.js';
-import {urlAllProducts} from './url/url.js';
+import {urlAllProducts, urlConfirmation} from './url/url.js';
 import {firstNameRegex, lastNameRegex, addressRegex, cityRegex, emailRegex} from './utils/regex.js'; 
+import {deleteCart, deleteStorage} from './fonctions/fonctions_delete.js';
+import {totalPrice} from './fonctions/fonctions_price.js';
+import {changeQuantityCartInHTML, changeQuantityCartInStorage} from './fonctions/fonctions_change.js';
 
 // Initialisation de certaines variables 
-let tabQuantity = [];   
-let sumQuantity = 0;    
-let tabPrice = [];      
-let sumPrice = 0;       
-let cartPrice = [];     
+let tabQuantity = [];     
+let cartPrice = []; 
+let sumQuantity = 0;     
 
 /*
 On va faire une boucle sur chaque élément du panier( dans le localStorage) : 
@@ -66,7 +67,7 @@ qui gère la suppression d'un produit
                                                                 </article> `
 
              
-        
+        totalPrice();           // Affichage du prix total du panier
 
 
         let deleteButton = document.getElementsByClassName("deleteItem"); // variable qui recupère les boutons supprimer
@@ -100,122 +101,53 @@ qui gère la suppression d'un produit
     })   
 }
   
-totalPrice();           // Affichage du prix total du panier
+
 totalQuantity();        // Recuperation de la quantité totale 
 totalQuantityHTML();    // Affichage de cette quantité dans le HTML  
 
 
-
-function deleteCart(element) {
-    element.closest("article").remove();
-}
-
-function deleteStorage(name){
-    localStorage.removeItem(name);
-}
-
-
-function changeQuantityCartInHTML(element){
-    element.setAttribute("value", event.target.value);
-}
-
-function changeQuantityCartInStorage(element){
-    let nameCart = element.parentElement.parentElement.previousElementSibling.children[0].innerHTML + " " + element.parentElement.parentElement.previousElementSibling.children[1].innerHTML
-    let findElementStorage = localStorage.getItem(nameCart);
-    let findQuantity = JSON.parse(findElementStorage);
-    findQuantity[2] = event.target.value;
-    localStorage.setItem(nameCart, JSON.stringify(findQuantity));
-}
-
-
-function changePriceCart(element, index){
-    /*if( document.querySelectorAll(".cart__item__content__description")[index]) {
-        document.querySelectorAll(".cart__item__content__description")[index].querySelectorAll("p")[1].textContent = (event.target.value)*cartPrice[index] + " €";
-    }*/
-    element.parentElement.parentElement.previousElementSibling.children[2].textContent = (event.target.value)*cartPrice[index] + " €";
-}
-
+//on trouve la quantité totale d'article
 function totalQuantity(){
     for(let tab of tabQuantity){
         if(tab){
-        sumQuantity += parseInt(tab);
+        sumQuantity += parseInt(tab); //pour chaque produit, on ajoute sa quantité
         }
     }
 }
-
+//affichage quantité totale d'article dans le HTML
 function totalQuantityHTML(){
     document.getElementById("totalQuantity").textContent = sumQuantity;
 }
 
-function changeTotalQuantity(index){
-    tabQuantity[index] = event.target.value;
-    sumQuantity = 0;
-    totalQuantity();
-    totalQuantityHTML();
-}
-
+//change la quantité totale apres suppression
 function deleteTotalQuantity(index){
-    delete tabQuantity[index];
+    delete tabQuantity[index]; //supprime notre élément du tableau des quantités
+    sumQuantity = 0;           //on reajuste la variable de la somme
+    totalQuantity();            //on recalcule la somme
+    totalQuantityHTML();        //on affiche cette nouvelle somme
+}
+
+// change la quantité totale apres que l'utilisateur la modifie
+function changeTotalQuantity(index){
+    tabQuantity[index] = event.target.value; //notre element devient la valeur de l'input
     sumQuantity = 0;
     totalQuantity();
     totalQuantityHTML();
 }
 
-
-
-
-
-function setTotalPrice(data, quantity){
-    
-    tabPrice.push(data*quantity); 
-    let totalPrice= 0;
-    for(let tab of tabPrice){
-        totalPrice += tab;
-    } 
-    document.getElementById("totalPrice").textContent = totalPrice;
-}
-
-
-
-function changeTotalPrice(index){
-    console.log(tabPrice);
-    tabPrice[index]= cartPrice[index]* event.target.value ;
-    console.log(tabPrice)
-    let totalPrice = 0;
-    for(tab of tabPrice){
-        totalPrice += tab;
-    } 
-    document.getElementById("totalPrice").textContent = totalPrice;    
-}
-
-function changeTotalPrice2(element, index){
-    tabPrice[index] = JSON.parse(element.parentElement.parentElement.previousElementSibling.children[2].textContent.split(" ")[0]);  
-    document.getElementById("totalPrice").textContent = tabPrice; 
-}
-
-function totalPrice(){
-    let elements = document.getElementsByClassName("cart__item__content__description");
-    let totalPrice = 0;
-    for(let element of elements){
-        totalPrice += JSON.parse(element.getElementsByTagName("p")[1].textContent.split(" ")[0]);
-        
-    }
-    document.getElementById("totalPrice").textContent = totalPrice;
+//on change l'affichage du prix dans le panier lorsqu'on change la quantité
+function changePriceCart(element, index){
+    element.parentElement.parentElement.previousElementSibling.children[2].textContent = (event.target.value)*cartPrice[index] + " €";
 }
 
 
 
 
+/*==============================================================
 
+ON PASSE AU NIVEAU DU FORMULAIRE 
 
-
-
-
-
-
-
-
-
+==============================================================*/
 function isEmpty(){
     let inputs = document.querySelectorAll(".cart__order__form__question input");
     for(let input of inputs){
@@ -288,11 +220,8 @@ function send(value) {
       }
     })
     .then(function(value) {
-        //let url = new URL("http://127.0.0.1:5500/front/html/confirmation.html");
-        //url.searchParams.append("orderId", value.orderId);
-        //window.location.href= url;
         localStorage.clear();
-        window.location.href="./confirmation.html?orderId="+value.orderId
+        window.location.href= urlConfirmation + value.orderId
     });
   }
 
