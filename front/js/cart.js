@@ -1,9 +1,9 @@
-import {Contact} from './contact.js';
-import {urlAllProducts, urlConfirmation} from './url/url.js';
+import {urlAllProducts} from './url/url.js';
 import {firstNameRegex, lastNameRegex, addressRegex, cityRegex, emailRegex} from './utils/regex.js'; 
 import {deleteCart, deleteStorage} from './fonctions/fonctions_delete.js';
 import {totalPrice} from './fonctions/fonctions_price.js';
 import {changeQuantityCartInHTML, changeQuantityCartInStorage} from './fonctions/fonctions_change.js';
+import {validateItemForm, validateForm} from './fonctions/fonctions_form.js';
 
 // Initialisation de certaines variables 
 let tabQuantity = [];     
@@ -148,83 +148,6 @@ function changePriceCart(element, index){
 ON PASSE AU NIVEAU DU FORMULAIRE 
 
 ==============================================================*/
-function isEmpty(){
-    let inputs = document.querySelectorAll(".cart__order__form__question input");
-    for(let input of inputs){
-        if(input.value == ""){
-            return true;
-        }
-    }
-}
-
-
-function validateItemForm(name, nameFrench, regex){
-    document.getElementById(name).addEventListener("input", function(event){
-        let value = event.target.value;
-        if(value !== "" && regex.test(value)){
-            document.getElementById( name + "ErrorMsg").textContent = "";
-        } else {
-            document.getElementById(name + "ErrorMsg").textContent = nameFrench + " valide doit être renseigné";
-        }
-    })
-}
-
-
-function notValid(value, regex){
-    if(value !== "" && regex.test(value)){
-        return false;
-    } else {
-        return true;
-    }
-}
-
-function validateForm(){
-    document.querySelector(".cart__order form").addEventListener("submit", function(event){
-        let firstName = document.getElementById("firstName").value;
-        let lastName = document.getElementById("lastName").value;
-        let address = document.getElementById("address").value;
-        let city = document.getElementById("city").value;
-        let email = document.getElementById("email").value;
-        if(localStorage.length == 0){
-            event.preventDefault();
-            alert("Votre panier est vide");
-        } else if(notValid(firstName, firstNameRegex) || notValid(lastName, lastNameRegex) || notValid(address, addressRegex) || notValid(city, cityRegex) || notValid(email, emailRegex) || isEmpty()){
-            event.preventDefault();
-        } else {
-            event.preventDefault();
-            const contact = new Contact(firstName,lastName,address,city,email);
-            let products = [];
-            for (let i = 0; i < localStorage.length; i++){
-                let idProduct = JSON.parse(localStorage.getItem(localStorage.key(i)))[0];
-                products.push(idProduct);
-            }
-            
-            send({contact, products});
-        }
-    })
-}
-
-
-function send(value) {
-    fetch("http://localhost:3000/api/products/order", {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json', 
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(value)
-    })
-    .then(function(res) {
-      if (res.ok) {
-        return res.json();
-      }
-    })
-    .then(function(value) {
-        localStorage.clear();
-        window.location.href= urlConfirmation + value.orderId
-    });
-  }
-
 
 validateItemForm("firstName", "Un prenom", firstNameRegex);
 validateItemForm("lastName", "Un nom de famille", lastNameRegex);
@@ -234,11 +157,6 @@ validateItemForm("email", "Un e-mail", emailRegex );
 validateForm();
 
 
-
-
-
-/*=============================================================================================================================================*/
-/*=============================================================================================================================================*/
 
 
 
